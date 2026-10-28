@@ -2,13 +2,14 @@ name: TalentCore CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -24,4 +25,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run tests
-        run: pytest -v
+        run: |
+          pytest -v
+
+      - name: Iniciar servidor y probar agentes
+        run: |
+          uvicorn app.main:app --host 127.0.0.1 --port 8000 &
+          sleep 3
+          python probar_api.py
